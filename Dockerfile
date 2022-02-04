@@ -1,4 +1,4 @@
-FROM ubuntu:21.10
+FROM ubuntu:21.04
 MAINTAINER Julien Salort, julien.salort@ens-lyon.fr
 
 # For some reason, it gets stuck later on if ca-certificates-java is not installed first
@@ -24,13 +24,7 @@ RUN echo Europe/Paris > /etc/timezone && \
     ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 
 # Tools and compilers
-RUN apt install -y build-essential git cmake pkg-config unzip yasm checkinstall gcc-10 gfortran-10 doxygen wget
-
-# We use gcc 10 because opencv does not support GNU compiler > 10
-ENV CC "/usr/bin/gcc-10"
-ENV CXX "/usr/bin/g++-10"
-ENV F70 "/usr/bin/gfortran-10"
-ENV F90 "/usr/bin/gfortran-10"
+RUN apt install -y build-essential git cmake pkg-config unzip yasm checkinstall gfortran doxygen wget
 
 # Python 3
 RUN apt install -y python3-dev python3-pip python3-numpy python3-testresources  python3-venv
