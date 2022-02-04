@@ -127,5 +127,10 @@ RUN cd /home/ptluser/ptl-light && \
     cmake -Wno-dev -D PARALLEL_SCHEME=TBB build && \
     make
 
+USER root
+RUN cd /home/ptluser/ptl-light && \
+    make install
+
+USER "$USER_NAME"
 ENV HOME "$USER_HOME"
 WORKDIR "$USER_HOME"
