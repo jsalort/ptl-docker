@@ -23,14 +23,25 @@ RUN adduser \
 RUN echo Europe/Paris > /etc/timezone && \
     ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 
-# Install dependencies (TODO: are they all needed ?)
-RUN apt install -y git libeigen3-dev libtinyxml2-dev libtinyxml2.6.2v5 libboost-dev libboost-all-dev libtbb-dev  libvtk7-dev libvtk7.1p libpcl-dev libopencv-dev libceres-dev cmake libusb-1.0-0-dev vim libmkl-tbb-thread python3-vtk7 vtk7 libvtk7-qt-dev tcl-vtk7 libgflags-dev libsuitesparse-dev libgoogle-glog-dev libatlas-base-dev build-essential cmake pkg-config unzip yasm git checkinstall libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libxvidcore-dev x264 libx264-dev libfaac-dev libmp3lame-dev libtheora-dev  libfaac-dev libmp3lame-dev libvorbis-dev libopencore-amrnb-dev libopencore-amrwb-dev libdc1394-22-dev libxine2-dev libv4l-dev v4l-utils libgtk-3-dev python3-dev python3-pip python3-numpy python3-testresources libatlas-base-dev gfortran libprotobuf-dev protobuf-compiler libgoogle-glog-dev libgflags-dev libgphoto2-dev libeigen3-dev libhdf5-dev doxygen python3-venv wget
+# Tools and compilers
+RUN apt install -y build-essential git cmake pkg-config unzip yasm checkinstall gcc-10 gfortran-10 doxygen wget
+
+# We use gcc 10 because opencv does not support GNU compiler > 10
+ENV CC "/usr/bin/gcc-10"
+ENV CXX "/usr/bin/g++-10"
+ENV F70 "/usr/bin/gfortran-10"
+ENV F90 "/usr/bin/gfortran-10"
+
+# Python 3
+RUN apt install -y python3-dev python3-pip python3-numpy python3-testresources  python3-venv
+
+# Libraries
+RUN apt install -y libeigen3-dev libtinyxml2-dev libtinyxml2.6.2v5 libboost-dev libboost-all-dev libtbb-dev libvtk7-dev libvtk7.1p libpcl-dev libusb-1.0-0-dev vim libmkl-tbb-thread python3-vtk7 vtk7 libvtk7-qt-dev tcl-vtk7 libgflags-dev libsuitesparse-dev libgoogle-glog-dev libatlas-base-dev libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libxvidcore-dev x264 libx264-dev libfaac-dev libmp3lame-dev libtheora-dev libfaac-dev libmp3lame-dev libvorbis-dev libopencore-amrnb-dev libopencore-amrwb-dev libdc1394-22-dev libxine2-dev libv4l-dev v4l-utils libgtk-3-dev libatlas-base-dev libprotobuf-dev protobuf-compiler libgoogle-glog-dev libgflags-dev libgphoto2-dev libeigen3-dev libhdf5-dev nvidia-cuda-dev nvidia-cuda-toolkit
+#RUN apt install -y libopencv-dev libceres-dev
 
 RUN update-alternatives --install /usr/bin/vtk vtk /usr/bin/vtk7 1
 RUN ln -s -f /usr/include/linux/libv4l1-videodev.h /usr/include/videodev.h
 RUN python3 -m venv /home/ptluser/ve39
-
-RUN apt install -y nvidia-cuda-dev nvidia-cuda-toolkit
 
 # Install CERES from source
 USER "$USER_NAME"
@@ -73,8 +84,6 @@ RUN mkdir /home/ptluser/opencv-build && \
     unzip opencv_contrib.zip && \
     mkdir /home/ptluser/opencv-build/opencv-4.5.2/build
 
-ENV CC "/usr/bin/gcc-10"
-ENV CXX "/usr/bin/g++-10"
 
 RUN cd /home/ptluser/opencv-build/opencv-4.5.2/build && \
     cmake -D CMAKE_BUILD_TYPE=RELEASE \
