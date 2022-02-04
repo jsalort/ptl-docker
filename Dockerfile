@@ -24,14 +24,14 @@ RUN echo Europe/Paris > /etc/timezone && \
     ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 
 # Tools and compilers
-RUN apt install -y build-essential git cmake pkg-config unzip yasm checkinstall gfortran doxygen wget
-
-# Python 3
-RUN apt install -y python3-dev python3-pip python3-numpy python3-testresources  python3-venv
+RUN apt install -y build-essential git cmake pkg-config unzip yasm checkinstall gfortran doxygen wget vim
 
 # Libraries
-RUN apt install -y libeigen3-dev libtinyxml2-dev libtinyxml2.6.2v5 libboost-dev libboost-all-dev libtbb-dev libvtk7-dev libvtk7.1p libpcl-dev libusb-1.0-0-dev vim libmkl-tbb-thread python3-vtk7 vtk7 libvtk7-qt-dev tcl-vtk7 libgflags-dev libsuitesparse-dev libgoogle-glog-dev libatlas-base-dev libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libxvidcore-dev x264 libx264-dev libfaac-dev libmp3lame-dev libtheora-dev libfaac-dev libmp3lame-dev libvorbis-dev libopencore-amrnb-dev libopencore-amrwb-dev libdc1394-22-dev libxine2-dev libv4l-dev v4l-utils libgtk-3-dev libatlas-base-dev libprotobuf-dev protobuf-compiler libgoogle-glog-dev libgflags-dev libgphoto2-dev libeigen3-dev libhdf5-dev nvidia-cuda-dev nvidia-cuda-toolkit
-#RUN apt install -y libopencv-dev libceres-dev
+RUN apt install -y libeigen3-dev libtinyxml2-dev libtinyxml2.6.2v5 libboost-dev libboost-all-dev libtbb-dev libvtk7-dev libvtk7.1p libpcl-dev libusb-1.0-0-dev vtk7 libvtk7-qt-dev tcl-vtk7 libgflags-dev libsuitesparse-dev libgoogle-glog-dev libatlas-base-dev libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libxvidcore-dev x264 libx264-dev libfaac-dev libmp3lame-dev libtheora-dev libfaac-dev libmp3lame-dev libvorbis-dev libopencore-amrnb-dev libopencore-amrwb-dev libdc1394-22-dev libxine2-dev libv4l-dev v4l-utils libgtk-3-dev libatlas-base-dev libprotobuf-dev protobuf-compiler libgoogle-glog-dev libgflags-dev libgphoto2-dev libeigen3-dev libhdf5-dev nvidia-cuda-dev nvidia-cuda-toolkit
+#RUN apt install -y libopencv-dev libceres-dev libmkl-tbb-thread
+
+# Python 3
+RUN apt install -y python3-dev python3-pip python3-numpy python3-testresources python3-venv python3-vtk7
 
 RUN update-alternatives --install /usr/bin/vtk vtk /usr/bin/vtk7 1
 RUN ln -s -f /usr/include/linux/libv4l1-videodev.h /usr/include/videodev.h
@@ -67,63 +67,63 @@ USER root
 RUN cd /home/ptluser/cnpy-build && \
     make install
 
-# Install OpenCV from fource
-USER "$USER_NAME"
-
-RUN mkdir /home/ptluser/opencv-build && \
-    cd /home/ptluser/opencv-build && \
-    wget -O opencv.zip https://github.com/opencv/opencv/archive/refs/tags/4.5.2.zip && \
-    wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/refs/tags/4.5.2.zip && \
-    unzip opencv.zip && \
-    unzip opencv_contrib.zip && \
-    mkdir /home/ptluser/opencv-build/opencv-4.5.2/build
-
-
-RUN cd /home/ptluser/opencv-build/opencv-4.5.2/build && \
-    cmake -D CMAKE_BUILD_TYPE=RELEASE \
-          -D CMAKE_INSTALL_PREFIX=/usr/local \
-          -D WITH_TBB=ON \
-          -D ENABLE_FAST_MATH=1 \
-          -D CUDA_FAST_MATH=1 \
-          -D WITH_CUBLAS=1 \
-          -D WITH_CUDA=ON \
-          -D BUILD_opencv_cudacodec=OFF \
-          -D WITH_CUDNN=OFF \
-          -D OPENCV_DNN_CUDA=OFF \
-          -D CUDA_ARCH_BIN=7.5 \
-          -D WITH_V4L=ON \
-          -D WITH_QT=OFF \
-          -D WITH_OPENGL=ON \
-          -D WITH_GSTREAMER=ON \
-          -D OPENCV_GENERATE_PKGCONFIG=ON \
-          -D OPENCV_PC_FILE_NAME=opencv.pc \
-          -D OPENCV_ENABLE_NONFREE=ON \
-          -D OPENCV_PYTHON3_INSTALL_PATH=/home/ptluser/ve39/lib/python3.9/site-packages \
-          -D PYTHON_EXECUTABLE=/home/ptluser/ve39/bin/python \
-          -D OPENCV_EXTRA_MODULES_PATH=/home/ptluser/opencv-build/opencv_contrib-4.5.2/modules \
-          -D INSTALL_PYTHON_EXAMPLES=OFF \
-          -D INSTALL_C_EXAMPLES=OFF \
-          -D BUILD_EXAMPLES=OFF /home/ptluser/opencv-build/opencv-4.5.2
-
-RUN cd /home/ptluser/opencv-build/opencv-4.5.2/build && \    
-    make
-
+## Install OpenCV from fource
+#USER "$USER_NAME"
+#
+#RUN mkdir /home/ptluser/opencv-build && \
+#    cd /home/ptluser/opencv-build && \
+#    wget -O opencv.zip https://github.com/opencv/opencv/archive/refs/tags/4.5.2.zip && \
+#    wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/refs/tags/4.5.2.zip && \
+#    unzip opencv.zip && \
+#    unzip opencv_contrib.zip && \
+#    mkdir /home/ptluser/opencv-build/opencv-4.5.2/build
+#
+#
+#RUN cd /home/ptluser/opencv-build/opencv-4.5.2/build && \
+#    cmake -D CMAKE_BUILD_TYPE=RELEASE \
+#          -D CMAKE_INSTALL_PREFIX=/usr/local \
+#          -D WITH_TBB=ON \
+#          -D ENABLE_FAST_MATH=1 \
+#          -D CUDA_FAST_MATH=1 \
+#          -D WITH_CUBLAS=1 \
+#          -D WITH_CUDA=ON \
+#          -D BUILD_opencv_cudacodec=OFF \
+#          -D WITH_CUDNN=OFF \
+#          -D OPENCV_DNN_CUDA=OFF \
+#          -D CUDA_ARCH_BIN=7.5 \
+#          -D WITH_V4L=ON \
+#          -D WITH_QT=OFF \
+#          -D WITH_OPENGL=ON \
+#          -D WITH_GSTREAMER=ON \
+#          -D OPENCV_GENERATE_PKGCONFIG=ON \
+#          -D OPENCV_PC_FILE_NAME=opencv.pc \
+#          -D OPENCV_ENABLE_NONFREE=ON \
+#          -D OPENCV_PYTHON3_INSTALL_PATH=/home/ptluser/ve39/lib/python3.9/site-packages \
+#          -D PYTHON_EXECUTABLE=/home/ptluser/ve39/bin/python \
+#          -D OPENCV_EXTRA_MODULES_PATH=/home/ptluser/opencv-build/opencv_contrib-4.5.2/modules \
+#          -D INSTALL_PYTHON_EXAMPLES=OFF \
+#          -D INSTALL_C_EXAMPLES=OFF \
+#          -D BUILD_EXAMPLES=OFF /home/ptluser/opencv-build/opencv-4.5.2
+#
+#RUN cd /home/ptluser/opencv-build/opencv-4.5.2/build && \    
+#    make
+#
+#USER root
+#
+#RUN cd /home/ptluser/opencv-build/opencv-4.5.2/build && \
+#    make install
 USER root
-
-RUN cd /home/ptluser/opencv-build/opencv-4.5.2/build && \
-    make install
-    
+RUN apt install -y libopencv-dev libfftw3-dev
 
 # Install PTL
 USER "$USER_NAME"
 
 RUN cd /home/ptluser && \
-    git clone https://bitbucket.org/eatgreen/ptl-light/src/master
-ENV PTL_PATH "/home/ptluser/master"
+    git clone https://gitlab.salort.eu/jsalort/ptl-light.git
+ENV PTL_PATH "/home/ptluser/ptl-light"
 ENV PTVDATA_PATH "/home/ptluser/data"
 RUN mkdir /home/ptluser/data
-
-RUN cd /home/ptluser/master && \
+RUN cd /home/ptluser/ptl-light && \
     cmake -Wno-dev -D PARALLEL_SCHEME=TBB build && \
     make
 
